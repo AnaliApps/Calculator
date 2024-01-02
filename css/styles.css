@@ -46,3 +46,11 @@
     font-size: 24px;
     font-weight: bolder;
 }
+.operator{
+    background-color: burlywood;
+}
+#clear{
+    background-color: red;
+}
+
+
