@@ -1,14 +1,11 @@
 let leftOperand = '0',operator = '',rightOperand = '0',selectedVal = [],res = '',result='';
+let periodRight;
+let periodLeft;
 let display = document.querySelector("#disp");
 let equals = document.querySelector("#equals");
 let clear = document.querySelector("#clear");
 let del = document.querySelector("#delete");
 let btns = [...document.querySelectorAll(".btn")];
-// const numberFormatter = new Intl.NumberFormat('en-US', {
-//   style: 'decimal',
-//   minimumFractionDigits: 2,
-//   maximumFractionDigits: 2
-// });
 function add(a,b){
     let sum = (parseFloat(a)+parseFloat(b)).toFixed(1);
     display.value = `${a} + ${b} = ${sum}`;;
@@ -40,7 +37,6 @@ function mod(a,b){
     display.value = `${a} % ${b} = ${mod}`
     return mod;
 }
-// let btnPeriod = document.querySelector("#period");
 btns.forEach(item=>{item.addEventListener("click",()=>{
     selectedVal.push(item.value);
     switch(item.value){
@@ -69,29 +65,42 @@ function handleClick(num,op){
     leftOperand = num.slice(0,num.indexOf(op)).join("");
     console.log(leftOperand)
     rightOperand = num.slice(num.indexOf(op)+1,).join("");
-    // if(leftOperand.includes(".")){
-    //     btnPeriod.setAttribute("disabled","");
-    // }else if(rightOperand.includes(".")){
-        
-    //     btnPeriod.setAttribute("disabled","")
-    // }
-    // btnPeriod.removeAttribute("disabled")
     console.log(rightOperand)
     display.value = num.join("");
     console.log(display.value)
     return `leftOperand ${leftOperand} , rightOperand ${rightOperand}`
+}
+function checkOccurrence(str,dot){
+    let count = 0;
+    str.forEach(item =>{
+        if(item === dot){
+            count++;
+        }
+    })
+    return count
 }
 function show(value){
     leftOperand = value
     console.log(leftOperand)
     selectedVal.push(leftOperand);
     console.log(selectedVal)
+    let r = '';
+    let l = '';
+    selectedVal.forEach((item,index)=>{
+        if(item === operator){
+            r = selectedVal.slice(index+1,-1)
+            l = selectedVal.slice(0,index)
+        }
+    })
+    periodRight = checkOccurrence(r,".");
+    periodLeft = checkOccurrence(l,".");
     result = selectedVal.slice(-1).join("");
     selectedVal = [];
     selectedVal.push(result);
     console.log(value)
     return
 }
+
 equals.addEventListener("click",()=>{
     switch(operator){
         case '+':
@@ -127,16 +136,6 @@ del.addEventListener("click",()=>{
     display.value = res;
     selectedVal = res.split("");
 })
-// btnPeriod.addEventListener("click",()=>{
-//     let l = leftOperand.includes(".")
-//     let r = rightOperand.includes(".")
-//     if(l){
-//         btnPeriod.disabled = true;
-//     }else if(r){
-//         btnPeriod.disabled = true;
-//     }
-//     btnPeriod.disabled = false;
-//     console.log(`left ${l} and right ${r}`)
-// })
+
 
 
