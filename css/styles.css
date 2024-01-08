@@ -31,7 +31,7 @@
     font-weight: bolder;
     text-align: end;
     border:0.5px solid grey;
-    background-color: white;
+    background-color: rgb(192, 182, 182);
 }
 #btns{
     justify-content: center;

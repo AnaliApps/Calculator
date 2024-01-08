@@ -1,141 +1,152 @@
-let leftOperand = '0',operator = '',rightOperand = '0',selectedVal = [],res = '',result='';
-let periodRight;
-let periodLeft;
-let display = document.querySelector("#disp");
 let equals = document.querySelector("#equals");
+let display = document.querySelector("#disp")
 let clear = document.querySelector("#clear");
 let del = document.querySelector("#delete");
+let btnPlus = document.querySelector("#add")
+let btnMinus = document.querySelector("#subtract");
 let btns = [...document.querySelectorAll(".btn")];
-function add(a,b){
-    let sum = (parseFloat(a)+parseFloat(b)).toFixed(1);
-    display.value = `${a} + ${b} = ${sum}`;;
-    return sum;
-}
+let btnsOp = [...document.querySelectorAll(".operator")]
 
-function subtract(a,b){
-    let diff = (parseFloat(a)-parseFloat(b)).toFixed(1);
-    display.value = `${a} - ${b} = ${diff}`
-    return diff;
-}
+const calculator =  {
+    displayValue:0,
+    firstNumber:[],
+    secondNumber:[],
+    step:false,
+    operator:null
+};
 
-function multiply(a,b){
-    let prod = (parseFloat(a)*parseFloat(b)).toFixed(1);
-    display.value = `${a} * ${b} = ${prod}`
-    return prod;
-}
-
-function divide(a,b){
-    if(b === 0){
-        return "Infinity";
+btns.forEach(item=>item.addEventListener("click",()=>{
+    if(item.classList.contains("btnNum")){
+        inputNum(item.value)
+    }else if(item.classList.contains("operator")){
+        handleOperator(item.value)  
+    }else if(item.classList.contains("dot")){
+        inputDecimal(item.value)
+    }else if(item.classList.contains("del")){
+        deleteLastNum();
+    }else if(item.classList.contains("reset")){
+        resetDisplay();
     }
-    let division = (parseFloat(a) / parseFloat(b)).toFixed(1);
-    display.value = `${a} / ${b} = ${division}`
-    return division;
-}
-function mod(a,b){
-    let mod = (parseFloat(a) % parseFloat(b)).toFixed(1);
-    display.value = `${a} % ${b} = ${mod}`
-    return mod;
-}
-btns.forEach(item=>{item.addEventListener("click",()=>{
-    selectedVal.push(item.value);
-    switch(item.value){
-        case '+':
-            operator = '+';
-            break;
-        case '-':
-            operator = '-';
-            break;
-        case '*':
-            operator = '*';
-            break;
-        case '/':
-            operator = '/';
-            break;
-        case '%':
-            operator = '%';
-            break;
-        default:
-            break;
+}))
+const handleOperator = (op) =>{    
+    if(calculator.operator !== null){
+        calculator.step = true;
+        calculate();
+        calculator.operator = null
+        return;
     }
-    handleClick(selectedVal,operator);
-})});
-
-function handleClick(num,op){
-    leftOperand = num.slice(0,num.indexOf(op)).join("");
-    console.log(leftOperand)
-    rightOperand = num.slice(num.indexOf(op)+1,).join("");
-    console.log(rightOperand)
-    display.value = num.join("");
-    console.log(display.value)
-    return `leftOperand ${leftOperand} , rightOperand ${rightOperand}`
+    calculator.step = true;
+    calculator.operator = op;
+    console.log(calculator.operator)
+    calculate()
+    
 }
-function checkOccurrence(str,dot){
-    let count = 0;
-    str.forEach(item =>{
-        if(item === dot){
-            count++;
-        }
-    })
-    return count
+ const inputNum = (num) =>{
+    let {operator,firstNumber,secondNumber} = calculator;
+    if(!operator && calculator.step === false){
+        firstNumber.push(num)
+        displayValueFunc(firstNumber.join(""))
+    }else{
+        secondNumber.push(num)
+        displayValueFunc(secondNumber.join(""))
+        calculator.step = true;
+    }
+    console.log(firstNumber,secondNumber)
+ }
+const inputDecimal = (dot) =>{
+    if(!calculator.firstNumber.includes(dot) && calculator.step === false){
+        calculator.firstNumber.push(dot)
+        return
+    }
+    if(!calculator.secondNumber.includes(dot) && calculator.step === true){
+        calculator.secondNumber.push(dot)
+        return
+    }else if(calculator.secondNumber.includes(dot) && calculator.secondNumber[0] === "."){
+        calculator.secondNumber.remove(".")
+        return;
+    }
 }
-function show(value){
-    leftOperand = value
-    console.log(leftOperand)
-    selectedVal.push(leftOperand);
-    console.log(selectedVal)
-    let r = '';
-    let l = '';
-    selectedVal.forEach((item,index)=>{
-        if(item === operator){
-            r = selectedVal.slice(index+1,-1)
-            l = selectedVal.slice(0,index)
-        }
-    })
-    periodRight = checkOccurrence(r,".");
-    periodLeft = checkOccurrence(l,".");
-    result = selectedVal.slice(-1).join("");
-    selectedVal = [];
-    selectedVal.push(result);
-    console.log(value)
-    return
+const calculate = () =>{
+    switch(calculator.operator){
+        case "+":
+            if(calculator.displayValue){
+                calculator.firstNumber = []
+                calculator.firstNumber.push(calculator.displayValue);
+                calculator.step = true;
+                calculator.secondNumber !== null ? calculator.secondNumber = []:inputNum(n)
+                calculator.displayValue = parseFloat(calculator.firstNumber.join("")) + parseFloat(calculator.secondNumber.join(""))
+            }
+            calculator.displayValue = parseFloat(calculator.firstNumber.join("")) + parseFloat(calculator.secondNumber.join(""))
+            displayValueFunc(calculator.displayValue)
+            return calculator.displayValue;
+        case "-":
+            if(calculator.displayValue){
+                calculator.firstNumber = []
+                calculator.firstNumber.push(calculator.displayValue);
+                calculator.step = true;
+                calculator.secondNumber !== null ? calculator.secondNumber = []:inputNum(n)
+                calculator.displayValue = parseFloat(calculator.firstNumber.join("")) - parseFloat(calculator.secondNumber.join(""))
+            }
+            calculator.displayValue = parseFloat(calculator.firstNumber.join("")) - parseFloat(calculator.secondNumber.join(""))
+            displayValueFunc(calculator.displayValue)
+            return calculator.displayValue;
+        case "*":
+            if(calculator.displayValue){
+                calculator.firstNumber = []
+                calculator.firstNumber.push(calculator.displayValue);
+                calculator.step = true;
+                calculator.secondNumber !== null ? calculator.secondNumber = []:inputNum(n)
+                calculator.displayValue = parseFloat(calculator.firstNumber.join("")) * parseFloat(calculator.secondNumber.join(""))
+            }
+            calculator.displayValue = parseFloat(calculator.firstNumber.join("")) * parseFloat(calculator.secondNumber.join(""))
+            displayValueFunc(calculator.displayValue)
+            return calculator.displayValue;
+        case "/":
+            if(calculator.displayValue){
+                calculator.firstNumber = []
+                calculator.firstNumber.push(calculator.displayValue);
+                calculator.step = true;
+                calculator.secondNumber !== null ? calculator.secondNumber = []:inputNum(n)
+                calculator.displayValue = parseFloat(calculator.firstNumber.join("")) / parseFloat(calculator.secondNumber.join(""))
+            }
+            calculator.displayValue = parseFloat(calculator.firstNumber.join(""))/ parseFloat(calculator.secondNumber.join(""))
+            displayValueFunc(calculator.displayValue)
+            return calculator.displayValue;
+        case "%":
+            if(calculator.displayValue){
+                calculator.firstNumber = []
+                calculator.firstNumber.push(calculator.displayValue);
+                calculator.step = true;
+                calculator.secondNumber !== null ? calculator.secondNumber = []:inputNum(n)
+                calculator.displayValue = parseFloat(calculator.firstNumber.join("")) % parseFloat(calculator.secondNumber.join(""))
+            }
+            calculator.displayValue = parseFloat(calculator.firstNumber.join("")) % parseFloat(calculator.secondNumber.join(""))
+            displayValueFunc(calculator.displayValue)
+            return calculator.displayValue;
+    }
 }
-
+const displayValueFunc = (n) =>{
+    display = document.querySelector("#disp")
+    display.value = n;
+}
+const deleteLastNum = () =>{
+    if(!calculator.step){
+        calculator.firstNumber.splice(calculator.firstNumber.length-1,1)
+        displayValueFunc(calculator.firstNumber.join(""))
+    }else if(calculator.step){
+        calculator.secondNumber.splice(calculator.secondNumber.length-1,1)
+        displayValueFunc(calculator.secondNumber.join(""))
+    }
+}
+const resetDisplay = () =>{
+    calculator.displayValue = "";
+    calculator.firstNumber = [];
+    calculator.secondNumber = [];
+    calculator.operator = null;
+    calculator.step = false
+    displayValueFunc(calculator.displayValue)
+}
 equals.addEventListener("click",()=>{
-    switch(operator){
-        case '+':
-            display.value = `${add(leftOperand,rightOperand)}`;
-            show(display.value)
-            break;
-        case '-':
-            display.value = `${subtract(leftOperand,rightOperand)}`;
-            show(display.value);
-            break;
-        case '*':
-            display.value = `${multiply(leftOperand,rightOperand)}`;
-            show(display.value);
-            break;
-        case '/':
-            display.value = `${divide(leftOperand,rightOperand)}`;
-            show(display.value);
-            break;
-        case '%':
-            display.value = `${mod(leftOperand,rightOperand)}`;
-            show(display.value);
-            break;
-        default:
-            break;
-    }
+    display = document.querySelector("#disp")
+    displayValueFunc(display.value)
 })
-clear.addEventListener("click",()=>{
-    display.value = "";
-    selectedVal = [];
-});
-del.addEventListener("click",()=>{
-    res = selectedVal.slice(0,-1).join("");
-    display.value = res;
-    selectedVal = res.split("");
-})
-
-
-
