@@ -38,8 +38,7 @@ const handleOperator = (op) =>{
     calculator.step = true;
     calculator.operator = op;
     console.log(calculator.operator)
-    calculate()
-    
+    calculate()   
 }
  const inputNum = (num) =>{
     let {operator,firstNumber,secondNumber} = calculator;
@@ -126,8 +125,9 @@ const calculate = () =>{
     }
 }
 const displayValueFunc = (n) =>{
-    display = document.querySelector("#disp")
+    display = document.querySelector("#disp");
     display.value = n;
+    
 }
 const deleteLastNum = () =>{
     if(!calculator.step){
@@ -148,5 +148,30 @@ const resetDisplay = () =>{
 }
 equals.addEventListener("click",()=>{
     display = document.querySelector("#disp")
-    displayValueFunc(display.value)
+    let out;
+    switch(calculator.operator){
+        case "+":
+            out = parseFloat(calculator.firstNumber.join("")) + parseFloat(calculator.secondNumber.join(""));
+            displayValueFunc(out);
+            break;
+        case "-":
+            out = parseFloat(calculator.firstNumber.join("")) - parseFloat(calculator.secondNumber.join(""));
+            displayValueFunc(out);
+            break;
+        case "*":
+            out = parseFloat(calculator.firstNumber.join("")) * parseFloat(calculator.secondNumber.join(""));
+            displayValueFunc(out);
+            break;
+        case "/":
+            out = parseFloat(calculator.firstNumber.join("")) / parseFloat(calculator.secondNumber.join(""));
+            displayValueFunc(out);
+            break;
+        case "%":
+            out = parseFloat(calculator.firstNumber.join("")) % parseFloat(calculator.secondNumber.join(""));
+            displayValueFunc(out);
+            break;
+        default:
+            break;
+    }
+    
 })
